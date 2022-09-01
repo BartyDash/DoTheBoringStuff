@@ -2,7 +2,7 @@ const mineflayer = require('mineflayer');
 
 const bot = mineflayer.createBot({
     host: 'localhost',
-    port: 98738,
+    port: 56243,
     username: 'testowyBot'
 });
 
@@ -15,5 +15,11 @@ function lookAtNearestPlayer () {
     const pos = playerEntity.position.offset(0, playerEntity.height, 0);
     bot.lookAt(pos);
 }
+
+const welcome = () => {
+    bot.chat('hi!')
+  }
+  
+bot.once('spawn', welcome)
 
 bot.on('physicTick', lookAtNearestPlayer);

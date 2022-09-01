@@ -1,4 +1,5 @@
 import mineflayer from 'mineflayer';
+import chalk from 'chalk';
 import { config } from'./config.js';
 
 const bot = mineflayer.createBot({
@@ -19,6 +20,23 @@ function lookAtNearestPlayer () {
 
 bot.on('physicTick', lookAtNearestPlayer);
 
+function log(...msg) {
+    console.log(`[${config.username}]`, ...msg);
+}
+
 bot.on('login', () => {
-    console.log('Bot connected to server');
+    let botSocket = bot._client.socket;
+    log(chalk.ansi256(34)(`Logged in to ${botSocket.server ? botSocket.server : botSocket._host}`));
+});
+
+bot.on('spawn', async () => {
+    log(chalk.ansi256(46)(`Spawned`));
+});
+
+bot.on('end', (reason) => {
+    log(chalk.red(`Disconnected: ${reason}`));
+
+    if (reason == "disconnect.quitting") {
+        return;
+    }
 });

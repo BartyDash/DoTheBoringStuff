@@ -18,6 +18,8 @@ function lookAtNearestPlayer () {
     bot.lookAt(pos);
 }
 
+bot.on('error', (err) => log(chalk.red(err)));
+
 bot.on('physicTick', lookAtNearestPlayer);
 
 function log(...msg) {
@@ -31,6 +33,17 @@ bot.on('login', () => {
 
 bot.on('spawn', async () => {
     log(chalk.ansi256(46)(`Spawned`));
+
+    bot.chatAddPattern(
+        /(register haslo haslo)/,
+        'register',
+        'Registration required'
+    );
+    bot.chatAddPattern(
+        /(login haslo)/,
+        'loggingOn',
+        'Login required'
+    );
 });
 
 bot.on('end', (reason) => {
@@ -40,3 +53,16 @@ bot.on('end', (reason) => {
         return;
     }
 });
+
+//register and login to the server
+const login = () => {
+    bot.chat(`./login ${config.password}`);
+    log(chalk.ansi256(22)('Logged on to the server')); //ansi256 22
+}
+const register = () => {
+    bot.chat(`./register ${config.password} ${config.password}`);
+    log(chalk.ansi256(22)('Registered on the server')); //ansi256 22
+}
+  
+bot.on('loggingOn', login);
+bot.on('register', register);

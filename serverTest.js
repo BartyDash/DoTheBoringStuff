@@ -10,6 +10,8 @@ const bot = mineflayer.createBot({
     version: config.version
 });
 
+let mcData;
+
 function lookAtNearestPlayer () {
     const playerFilter = (entity) => entity.type === 'player';
     const playerEntity = bot.nearestEntity(playerFilter);
@@ -51,6 +53,7 @@ bot.on('spawn', async () => {
 bot.once('spawn', () => {
     bot.chat(`/register ${config.password} ${config.password}`);
     mineflayerViewer(bot, { port: 3007, firstPerson: true }) // port is the minecraft server port, if first person is false, you get a bird's-eye view
+    mcData = require('minecraft-data')(bot.version);
 });
 
 bot.on('end', (reason) => {
@@ -62,9 +65,12 @@ bot.on('end', (reason) => {
 });
 
 //register and login to the server
-const login = () => {
+async function login() {
     log(chalk.ansi256(22)('Already logged on to the server')); //ansi256 22
     //tutaj dać rozpoczęcie funkcji do wybierania okienek
+    await sayItems();
+    //await bot.equip(mcData.itemsByName.clock.id, 'hand');
+    await bot.activateItem();
 }
 const register = () => {
     bot.chat(`/login ${config.password}`);
@@ -74,7 +80,41 @@ const register = () => {
 bot.on('loggingOn', login);
 bot.on('register', register);
 
+//print all chat to the console
 bot.on('chat', (username, message) => {
     if (username === bot.username) return
     console.log(username + '  ' + message)
-  });
+});
+
+//print to the console own inventory
+function sayItems (items = bot.inventory.items()) {
+    const output = items.map(itemToString).join(', ');
+    if(output){
+      log(`Inventory: ${output}`);
+    }else{
+      log('Inventory: empty');
+    }
+};
+
+//convert to string
+function itemToString (item) {
+    if (item) {
+      return `${item.name} x ${item.count}`;
+    } else {
+      return '(nothing)';
+    }
+};
+
+bot.on('windowClose', (window) => {
+    log(`${window} closed`);
+});
+  
+bot.on("windowOpen", window => {
+    // if(windowCounter === 1){
+    //   bot.clickWindow(11, 0, 0)
+    // }else if(windowCounter === 2){
+    //   bot.clickWindow(12, 0, 0)
+    // }
+    console.log("Hey! Window opened! Title: " + window.title)
+    console.log(window.slots)
+});

@@ -1,6 +1,7 @@
 const mineflayer = require('mineflayer');
 const { mineflayer: mineflayerViewer } = require('prismarine-viewer');
 const chalk = require('chalk');
+const gui = require("mineflayer-gui")
 const { config } = require('./config.js');
 
 const bot = mineflayer.createBot({
@@ -11,6 +12,7 @@ const bot = mineflayer.createBot({
 });
 
 let mcData;
+bot.loadPlugin(gui.plugin)
 
 function lookAtNearestPlayer () {
     const playerFilter = (entity) => entity.type === 'player';
@@ -69,7 +71,7 @@ async function login() {
     log(chalk.ansi256(22)('Already logged on to the server')); //ansi256 22
     //tutaj dać rozpoczęcie funkcji do wybierania okienek
     await sayItems();
-    //await bot.equip(mcData.itemsByName.clock.id, 'hand');
+    //try activate item in hand
     await bot.activateItem();
 }
 const register = () => {
@@ -115,6 +117,6 @@ bot.on("windowOpen", window => {
     // }else if(windowCounter === 2){
     //   bot.clickWindow(12, 0, 0)
     // }
-    console.log("Hey! Window opened! Title: " + window.title)
-    console.log(window.slots)
+    console.log("Hey! Window opened! Title: " + window.title);
+    console.log(window.slots);
 });

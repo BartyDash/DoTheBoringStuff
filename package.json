@@ -2,6 +2,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "mineflayer": "^4.4.0",
+    "mineflayer-gui": "^2.1.1",
     "node-fetch": "^2.6.1",
     "prismarine-viewer": "^1.23.0"
   },

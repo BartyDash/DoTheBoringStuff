@@ -1,7 +1,8 @@
 const mineflayer = require('mineflayer');
 const { mineflayer: mineflayerViewer } = require('prismarine-viewer');
 const chalk = require('chalk');
-const gui = require("mineflayer-gui")
+const gui = require("mineflayer-gui");
+const ChatMessage = require('prismarine-chat')('1.18.2');
 const { config } = require('./config.js');
 
 const bot = mineflayer.createBot({
@@ -26,7 +27,7 @@ function lookAtNearestPlayer () {
 
 bot.on('error', (err) => log(chalk.red(err)));
 
-bot.on('physicTick', lookAtNearestPlayer);
+//bot.on('physicTick', lookAtNearestPlayer);
 
 function log(...msg) {
     console.log(`[${config.username}]`, ...msg);
@@ -119,4 +120,24 @@ bot.on("windowOpen", window => {
     // }
     console.log("Hey! Window opened! Title: " + window.title);
     console.log(window.slots);
+    example(window);
 });
+
+// create an object for configuring navigation
+function createOptions(window) {
+    this.window = window;
+    this.include = true;
+};
+
+function createItem(name, lore) {
+    this.name = new ChatMessage(name);
+    this.lore = [
+        new ChatMessage(lore)
+    ]
+};
+
+async function example(window) {
+    let options = new createOptions(window)
+    // clicks the item matching the object made with createItem
+    await bot.gui.clickItem(options, new createItem("SkyBlock", "Wersja:"));
+};

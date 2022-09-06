@@ -30,11 +30,13 @@ bot.on('login', () => {
 bot.on('spawn', async () => {
     log(chalk.ansi256(46)(`Spawned`));
     sayItems();
+    build();
 });
 
 bot.once('spawn', () => {
     bot.chat(`registered`);
     //mineflayerViewer(bot, { port: 3007, firstPerson: true }) // port is the minecraft server port, if first person is false, you get a bird's-eye view
+    
     mcData = require('minecraft-data')(bot.version);
 });
 
@@ -64,3 +66,16 @@ function itemToString (item) {
       return '(nothing)';
     }
 };
+
+async function build() {
+	try {
+        //await bot.equip(mcData.itemsByName.dirt.id, 'hand');
+		let referenceBlock = bot.blockAt(bot.entity.position.offset(0, 0, 0));
+		await bot.placeBlock(referenceBlock, vec3( 1, 0, 0));
+        await bot.placeBlock(referenceBlock, vec3( 0, 0, 1));
+        await bot.placeBlock(referenceBlock, vec3( -1, 0, 0));
+        await bot.placeBlock(referenceBlock, vec3( 0, 0, -1));
+	} catch(err) {
+		console.log(err);
+	}
+}

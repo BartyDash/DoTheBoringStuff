@@ -51,6 +51,8 @@ bot.on('spawn', async () => {
         'loggingOn',
         'Login required'
     );
+
+    sayItems();
 });
 
 bot.once('spawn', () => {
@@ -71,7 +73,7 @@ bot.on('end', (reason) => {
 async function login() {
     log(chalk.ansi256(22)('Already logged on to the server')); //ansi256 22
     //tutaj dać rozpoczęcie funkcji do wybierania okienek
-    await sayItems();
+
     //try activate item in hand
     await bot.activateItem();
 }
@@ -113,31 +115,14 @@ bot.on('windowClose', (window) => {
 });
   
 bot.on("windowOpen", window => {
-    // if(windowCounter === 1){
-    //   bot.clickWindow(11, 0, 0)
-    // }else if(windowCounter === 2){
-    //   bot.clickWindow(12, 0, 0)
-    // }
-    console.log("Hey! Window opened! Title: " + window.title);
-    console.log(window.slots);
-    example(window);
+    log("Hey! Window opened! Title: " + window.title);
+    if (window.title === '{"text":"§8Wybierz tryb:"}') {
+        clickStartWindow();
+    }
 });
 
-// create an object for configuring navigation
-function createOptions(window) {
-    this.window = window;
-    this.include = true;
-};
-
-function createItem(name, lore) {
-    this.name = new ChatMessage(name);
-    this.lore = [
-        new ChatMessage(lore)
-    ]
-};
-
-async function example(window) {
-    let options = new createOptions(window)
-    // clicks the item matching the object made with createItem
-    await bot.gui.clickItem(options, new createItem("SkyBlock", "Wersja:"));
+//skyblock server selection
+async function clickStartWindow() {
+    await bot.clickWindow(16, 0, 0);
+    log(chalk.ansi256(165)('Server selection was clicked!'));
 };

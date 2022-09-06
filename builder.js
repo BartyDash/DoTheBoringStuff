@@ -1,5 +1,7 @@
 const mineflayer = require('mineflayer');
 const chalk = require('chalk');
+const vec3 = require('vec3');
+const {pathfinder, Movements, goals} = require('mineflayer-pathfinder');
 const { builderConfig } = require('./config.js');
 
 const bot = mineflayer.createBot({
@@ -11,6 +13,9 @@ const bot = mineflayer.createBot({
 
 let mcData;
 
+bot.loadPlugin(pathfinder);
+
+bot.on('kicked', (reason, loggedIn) => console.log(reason, loggedIn));
 bot.on('error', (err) => log(chalk.red(err)));
 
 function log(...msg) {

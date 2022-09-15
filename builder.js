@@ -30,7 +30,8 @@ bot.on('login', () => {
 bot.on('spawn', async () => {
     log(chalk.ansi256(46)(`Spawned`));
     sayItems();
-    build();
+    bot.pathfinder.setGoal(new goals.GoalBlock(-8, -41, 9));
+    //build();
 });
 
 bot.once('spawn', () => {
@@ -70,12 +71,16 @@ function itemToString (item) {
 async function build() {
 	try {
         //await bot.equip(mcData.itemsByName.dirt.id, 'hand');
-		let referenceBlock = bot.blockAt(bot.entity.position.offset(0, 0, 0));
+		let referenceBlock = bot.blockAt(bot.entity.position.offset(0, 1, 0));
 		await bot.placeBlock(referenceBlock, vec3( 1, 0, 0));
-        await bot.placeBlock(referenceBlock, vec3( 0, 0, 1));
-        await bot.placeBlock(referenceBlock, vec3( -1, 0, 0));
-        await bot.placeBlock(referenceBlock, vec3( 0, 0, -1));
 	} catch(err) {
 		console.log(err);
 	}
+
+    bot.pathfinder.setGoal(new goals.GoalBlock(bot.entity.position.x+1, bot.entity.position.y, bot.entity.position.z));
 }
+
+bot.on('goal_reached', ()=>{
+    log('goal reached');
+    build();
+});
